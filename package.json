@@ -1,0 +1,14 @@
+{
+  "name": "hono",
+  "type": "module",
+  "description": "Hotel room booking system backend - college project",
+  "dependencies": {
+    "hono": "^4.11.7"
+  },
+  "author": "Vardhan Battula",
+  "devDependencies": {
+    "@types/node": "^20.11.17",
+    "tsx": "^4.7.1",
+    "typescript": "^5.8.3"
+  }
+}
