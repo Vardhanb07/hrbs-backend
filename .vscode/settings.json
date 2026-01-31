@@ -1,0 +1,12 @@
+{
+  "editor.fontSize": 14,
+  "editor.wordWrap": "on",
+  "editor.minimap.enabled": false,
+  "editor.formatOnSave": true,
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 500,
+  "files.exclude": {
+    "**/.git": true,
+  },
+  "terminal.integrated.fontSize": 14
+}
