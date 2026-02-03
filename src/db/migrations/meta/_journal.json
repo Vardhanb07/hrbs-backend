@@ -15,6 +15,13 @@
       "when": 1770126860463,
       "tag": "0001_nebulous_patch",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1770127836684,
+      "tag": "0002_milky_george_stacy",
+      "breakpoints": true
     }
   ]
 }
