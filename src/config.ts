@@ -13,10 +13,18 @@ type DBConfig = {
   url: string;
 };
 
+type APIConfig = {
+  port: number;
+};
+
 export const config: {
   db: DBConfig;
+  api: APIConfig;
 } = {
   db: {
     url: envOrThrow("DATABASE_URL"),
+  },
+  api: {
+    port: parseInt(envOrThrow("PORT")),
   },
 };
