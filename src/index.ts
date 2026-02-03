@@ -1,6 +1,5 @@
 import { Hono } from "hono";
 import { auth } from "./utils/auth.js";
-import { cors } from "hono/cors";
 
 const app = new Hono();
 
