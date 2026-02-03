@@ -1,6 +1,6 @@
 # hrbs-backend
 
-To spin to up server
+To spin up server
 ```
 pnpm install 
 pnpm run dev
