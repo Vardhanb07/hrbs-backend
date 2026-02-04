@@ -6,9 +6,20 @@ import authRoute from "@/src/routes/auth";
 import { auth } from "@/src/utils/auth";
 import users from "@/src/routes/users";
 import type { Env } from "@/src/utils/types";
+import { cors } from "hono/cors";
 
 const app = new Hono<Env>();
 
+app.use(
+  cors({
+    origin: config.cors.origin,
+    allowHeaders: ["Content-Type", "Authorization"],
+    allowMethods: ["POST", "GET", "OPTIONS"],
+    exposeHeaders: ["Content-Length"],
+    maxAge: 600,
+    credentials: true,
+  }),
+);
 app.use(logger());
 app.get("/", (c) => {
   return c.json({ message: "in-progress" });

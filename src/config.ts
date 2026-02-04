@@ -36,9 +36,14 @@ type APIConfig = {
   port: number;
 };
 
+type CORSConfig = {
+  origin: string
+}
+
 export const config: {
   db: DBConfig;
   api: APIConfig;
+  cors: CORSConfig
 } = {
   db: {
     url: envOrThrow("DATABASE_URL"),
@@ -47,4 +52,7 @@ export const config: {
   api: {
     port: parseInt(envOrThrow("PORT")),
   },
+  cors: {
+    origin: envOrThrow("ORIGIN")
+  }
 };
