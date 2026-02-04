@@ -1,6 +1,5 @@
 import "dotenv/config";
 import { defineConfig } from "drizzle-kit";
-// @ts-ignore
 import { config } from "./src/config";
 
 export default defineConfig({

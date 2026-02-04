@@ -1,9 +1,9 @@
 import { Hono } from "hono";
-import { auth } from "../utils/auth.js";
+import { auth } from "@/src/utils/auth";
 
 const router = new Hono();
 
-router.on(["POST", "GET"], "/auth/*", (c) => {
+router.on(["POST", "GET"], "/*", (c) => {
   return auth.handler(c.req.raw);
 });
 

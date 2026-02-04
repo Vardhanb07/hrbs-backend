@@ -1,9 +1,364 @@
 {
-  "id": "9425c7ce-2e9a-45fb-bd66-26b8a679d85f",
-  "prevId": "1655cca9-0193-4191-9a8b-85e34ca2f695",
+  "id": "2489e3dc-6932-4532-a5a6-210f1e60c94e",
+  "prevId": "92778d09-7716-4a45-ac50-ca654e2cbc0b",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
+    "public.account": {
+      "name": "account",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "account_id": {
+          "name": "account_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "provider_id": {
+          "name": "provider_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "access_token": {
+          "name": "access_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "refresh_token": {
+          "name": "refresh_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id_token": {
+          "name": "id_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "access_token_expires_at": {
+          "name": "access_token_expires_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "refresh_token_expires_at": {
+          "name": "refresh_token_expires_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "scope": {
+          "name": "scope",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "password": {
+          "name": "password",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "account_userId_idx": {
+          "name": "account_userId_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "account_user_id_user_id_fk": {
+          "name": "account_user_id_user_id_fk",
+          "tableFrom": "account",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.session": {
+      "name": "session",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "token": {
+          "name": "token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ip_address": {
+          "name": "ip_address",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_agent": {
+          "name": "user_agent",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "session_userId_idx": {
+          "name": "session_userId_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "session_user_id_user_id_fk": {
+          "name": "session_user_id_user_id_fk",
+          "tableFrom": "session",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "session_token_unique": {
+          "name": "session_token_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "token"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.user": {
+      "name": "user",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email_verified": {
+          "name": "email_verified",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "image": {
+          "name": "image",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "user_email_unique": {
+          "name": "user_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.verification": {
+      "name": "verification",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "identifier": {
+          "name": "identifier",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "value": {
+          "name": "value",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "verification_identifier_idx": {
+          "name": "verification_identifier_idx",
+          "columns": [
+            {
+              "expression": "identifier",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.hotels": {
       "name": "hotels",
       "schema": "",
@@ -44,8 +399,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.users": {
-      "name": "users",
+    "public.rooms": {
+      "name": "rooms",
       "schema": "",
       "columns": {
         "id": {
@@ -55,29 +410,36 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "name": {
-          "name": "name",
-          "type": "varchar(255)",
+        "hotel_id": {
+          "name": "hotel_id",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
+        "rooms": {
+          "name": "rooms",
+          "type": "jsonb",
           "primaryKey": false,
           "notNull": true,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
+          "default": "'{\"rooms\":[{\"room_no\":1,\"user_id\":null},{\"room_no\":2,\"user_id\":null},{\"room_no\":3,\"user_id\":null},{\"room_no\":4,\"user_id\":null},{\"room_no\":5,\"user_id\":null},{\"room_no\":6,\"user_id\":null},{\"room_no\":7,\"user_id\":null},{\"room_no\":8,\"user_id\":null},{\"room_no\":9,\"user_id\":null},{\"room_no\":10,\"user_id\":null},{\"room_no\":11,\"user_id\":null},{\"room_no\":12,\"user_id\":null},{\"room_no\":13,\"user_id\":null},{\"room_no\":14,\"user_id\":null},{\"room_no\":15,\"user_id\":null},{\"room_no\":16,\"user_id\":null},{\"room_no\":17,\"user_id\":null},{\"room_no\":18,\"user_id\":null},{\"room_no\":19,\"user_id\":null},{\"room_no\":20,\"user_id\":null},{\"room_no\":21,\"user_id\":null},{\"room_no\":22,\"user_id\":null},{\"room_no\":23,\"user_id\":null},{\"room_no\":24,\"user_id\":null},{\"room_no\":25,\"user_id\":null},{\"room_no\":26,\"user_id\":null},{\"room_no\":27,\"user_id\":null},{\"room_no\":28,\"user_id\":null},{\"room_no\":29,\"user_id\":null},{\"room_no\":30,\"user_id\":null},{\"room_no\":31,\"user_id\":null},{\"room_no\":32,\"user_id\":null},{\"room_no\":33,\"user_id\":null},{\"room_no\":34,\"user_id\":null},{\"room_no\":35,\"user_id\":null},{\"room_no\":36,\"user_id\":null},{\"room_no\":37,\"user_id\":null},{\"room_no\":38,\"user_id\":null},{\"room_no\":39,\"user_id\":null},{\"room_no\":40,\"user_id\":null},{\"room_no\":41,\"user_id\":null},{\"room_no\":42,\"user_id\":null},{\"room_no\":43,\"user_id\":null},{\"room_no\":44,\"user_id\":null},{\"room_no\":45,\"user_id\":null},{\"room_no\":46,\"user_id\":null},{\"room_no\":47,\"user_id\":null},{\"room_no\":48,\"user_id\":null},{\"room_no\":49,\"user_id\":null},{\"room_no\":50,\"user_id\":null},{\"room_no\":51,\"user_id\":null},{\"room_no\":52,\"user_id\":null},{\"room_no\":53,\"user_id\":null},{\"room_no\":54,\"user_id\":null},{\"room_no\":55,\"user_id\":null},{\"room_no\":56,\"user_id\":null},{\"room_no\":57,\"user_id\":null},{\"room_no\":58,\"user_id\":null},{\"room_no\":59,\"user_id\":null},{\"room_no\":60,\"user_id\":null},{\"room_no\":61,\"user_id\":null},{\"room_no\":62,\"user_id\":null},{\"room_no\":63,\"user_id\":null},{\"room_no\":64,\"user_id\":null},{\"room_no\":65,\"user_id\":null},{\"room_no\":66,\"user_id\":null},{\"room_no\":67,\"user_id\":null},{\"room_no\":68,\"user_id\":null},{\"room_no\":69,\"user_id\":null},{\"room_no\":70,\"user_id\":null},{\"room_no\":71,\"user_id\":null},{\"room_no\":72,\"user_id\":null},{\"room_no\":73,\"user_id\":null},{\"room_no\":74,\"user_id\":null},{\"room_no\":75,\"user_id\":null},{\"room_no\":76,\"user_id\":null},{\"room_no\":77,\"user_id\":null},{\"room_no\":78,\"user_id\":null},{\"room_no\":79,\"user_id\":null},{\"room_no\":80,\"user_id\":null},{\"room_no\":81,\"user_id\":null},{\"room_no\":82,\"user_id\":null},{\"room_no\":83,\"user_id\":null},{\"room_no\":84,\"user_id\":null},{\"room_no\":85,\"user_id\":null},{\"room_no\":86,\"user_id\":null},{\"room_no\":87,\"user_id\":null},{\"room_no\":88,\"user_id\":null},{\"room_no\":89,\"user_id\":null},{\"room_no\":90,\"user_id\":null},{\"room_no\":91,\"user_id\":null},{\"room_no\":92,\"user_id\":null},{\"room_no\":93,\"user_id\":null},{\"room_no\":94,\"user_id\":null},{\"room_no\":95,\"user_id\":null},{\"room_no\":96,\"user_id\":null},{\"room_no\":97,\"user_id\":null},{\"room_no\":98,\"user_id\":null},{\"room_no\":99,\"user_id\":null},{\"room_no\":100,\"user_id\":null}]}'::jsonb"
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "rooms_hotel_id_hotels_id_fk": {
+          "name": "rooms_hotel_id_hotels_id_fk",
+          "tableFrom": "rooms",
+          "tableTo": "hotels",
+          "columnsFrom": [
+            "hotel_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -90,7 +452,7 @@
       "columns": {
         "user_id": {
           "name": "user_id",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -123,10 +485,10 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "users_to_hotels_user_id_users_id_fk": {
-          "name": "users_to_hotels_user_id_users_id_fk",
+        "users_to_hotels_user_id_user_id_fk": {
+          "name": "users_to_hotels_user_id_user_id_fk",
           "tableFrom": "users_to_hotels",
-          "tableTo": "users",
+          "tableTo": "user",
           "columnsFrom": [
             "user_id"
           ],

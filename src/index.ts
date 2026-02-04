@@ -1,20 +1,17 @@
 import { Hono } from "hono";
 import { serve } from "@hono/node-server";
-import { config } from "./config.js";
+import { config } from "@/src/config";
 import { logger } from "hono/logger";
-import authRoute from "./routes/auth.js";
-import { auth } from "./utils/auth.js";
+import authRoute from "@/src/routes/auth";
+import { auth } from "@/src/utils/auth";
+import users from "@/src/routes/users";
+import type { Env } from "@/src/utils/types";
 
-const app = new Hono<{
-  Variables: {
-    user: typeof auth.$Infer.Session.user | null;
-    session: typeof auth.$Infer.Session.session | null;
-  };
-}>();
+const app = new Hono<Env>();
 
 app.use(logger());
 app.get("/", (c) => {
-  return c.text("hello from hono!");
+  return c.json({ message: "in-progress" });
 });
 
 app.use("*", async (c, next) => {
@@ -31,11 +28,8 @@ app.use("*", async (c, next) => {
   await next();
 });
 
-const routes = [authRoute];
-
-routes.forEach((route) => {
-  app.basePath("/api").route("/", route);
-});
+app.route("/api/auth", authRoute);
+app.route("/api/users", users);
 
 serve(
   {

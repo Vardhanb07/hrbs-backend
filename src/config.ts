@@ -9,8 +9,27 @@ const envOrThrow = (field: string) => {
   return env[field];
 };
 
+export type roomsType = {
+  rooms: {
+    room_no: number;
+    user_id: string | null;
+  }[];
+};
+
+const rooms: roomsType = {
+  rooms: [],
+};
+
+for (let i = 1; i <= 100; i++) {
+  rooms.rooms.push({
+    room_no: i,
+    user_id: null,
+  });
+}
+
 type DBConfig = {
   url: string;
+  rooms: roomsType;
 };
 
 type APIConfig = {
@@ -23,6 +42,7 @@ export const config: {
 } = {
   db: {
     url: envOrThrow("DATABASE_URL"),
+    rooms: rooms
   },
   api: {
     port: parseInt(envOrThrow("PORT")),
