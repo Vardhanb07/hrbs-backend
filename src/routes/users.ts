@@ -1,12 +1,11 @@
 import { Hono } from "hono";
-import { auth } from "@/src/utils/auth";
 import type { Env } from "@/src/utils/types";
 
 const router = new Hono<Env>();
 
 router.get("/", (c) => {
   const user = c.get("user");
-  if (!user) return c.body(null, 401);
+  if (!user) return c.body(null, 401); 
   return c.json({ message: "in-progress" });
 });
 

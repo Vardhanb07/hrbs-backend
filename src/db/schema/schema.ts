@@ -108,3 +108,7 @@ export const rooms = pgTable("rooms", {
     .$onUpdate(() => new Date())
     .notNull(),
 });
+
+export type NewHost = typeof hosts.$inferInsert;
+export type NewHotel = typeof hotels.$inferInsert;
+export type NewRoom = typeof rooms.$inferInsert;

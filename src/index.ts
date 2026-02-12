@@ -3,6 +3,8 @@ import { serve } from "@hono/node-server";
 import { config } from "@/src/config";
 import { logger } from "hono/logger";
 import authRoute from "@/src/routes/auth";
+import hosts from "@/src/routes/hosts";
+import hotels from "@/src/routes/hotels";
 import { auth } from "@/src/utils/auth";
 import users from "@/src/routes/users";
 import type { Env } from "@/src/utils/types";
@@ -39,8 +41,10 @@ app.use("*", async (c, next) => {
   await next();
 });
 
-app.route("/api/auth", authRoute);
-app.route("/api/users", users);
+app.route("/api/v1/auth", authRoute);
+app.route("/api/v1/users", users);
+app.route("/api/v1/hosts", hosts);
+app.route("/api/v1/hotels", hotels);
 
 serve(
   {
