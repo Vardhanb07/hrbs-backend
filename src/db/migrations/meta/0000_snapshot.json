@@ -1,5 +1,5 @@
 {
-  "id": "2e32fb1a-b7b6-4d9c-9ac2-b700127258cd",
+  "id": "9df84de6-03e0-4f2a-8e98-80218590f78d",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -248,6 +248,13 @@
           "primaryKey": false,
           "notNull": true
         },
+        "is_host": {
+          "name": "is_host",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
         "email_verified": {
           "name": "email_verified",
           "type": "boolean",
@@ -359,6 +366,76 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.hosts": {
+      "name": "hosts",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "hosts_userId_idx": {
+          "name": "hosts_userId_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "hosts_user_id_users_id_fk": {
+          "name": "hosts_user_id_users_id_fk",
+          "tableFrom": "hosts",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.hotels": {
       "name": "hotels",
       "schema": "",
@@ -372,7 +449,20 @@
         },
         "name": {
           "name": "name",
-          "type": "varchar(255)",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "state": {
+          "name": "state",
+          "type": "state",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "host_id": {
+          "name": "host_id",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
@@ -392,7 +482,21 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "hotels_host_id_hosts_id_fk": {
+          "name": "hotels_host_id_hosts_id_fk",
+          "tableFrom": "hotels",
+          "tableTo": "hosts",
+          "columnsFrom": [
+            "host_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -416,12 +520,32 @@
           "primaryKey": false,
           "notNull": true
         },
-        "rooms": {
-          "name": "rooms",
-          "type": "jsonb",
+        "price_in_inr": {
+          "name": "price_in_inr",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "is_reserved": {
+          "name": "is_reserved",
+          "type": "boolean",
           "primaryKey": false,
           "notNull": true,
-          "default": "'{\"rooms\":[{\"room_no\":1,\"user_id\":null},{\"room_no\":2,\"user_id\":null},{\"room_no\":3,\"user_id\":null},{\"room_no\":4,\"user_id\":null},{\"room_no\":5,\"user_id\":null},{\"room_no\":6,\"user_id\":null},{\"room_no\":7,\"user_id\":null},{\"room_no\":8,\"user_id\":null},{\"room_no\":9,\"user_id\":null},{\"room_no\":10,\"user_id\":null},{\"room_no\":11,\"user_id\":null},{\"room_no\":12,\"user_id\":null},{\"room_no\":13,\"user_id\":null},{\"room_no\":14,\"user_id\":null},{\"room_no\":15,\"user_id\":null},{\"room_no\":16,\"user_id\":null},{\"room_no\":17,\"user_id\":null},{\"room_no\":18,\"user_id\":null},{\"room_no\":19,\"user_id\":null},{\"room_no\":20,\"user_id\":null},{\"room_no\":21,\"user_id\":null},{\"room_no\":22,\"user_id\":null},{\"room_no\":23,\"user_id\":null},{\"room_no\":24,\"user_id\":null},{\"room_no\":25,\"user_id\":null},{\"room_no\":26,\"user_id\":null},{\"room_no\":27,\"user_id\":null},{\"room_no\":28,\"user_id\":null},{\"room_no\":29,\"user_id\":null},{\"room_no\":30,\"user_id\":null},{\"room_no\":31,\"user_id\":null},{\"room_no\":32,\"user_id\":null},{\"room_no\":33,\"user_id\":null},{\"room_no\":34,\"user_id\":null},{\"room_no\":35,\"user_id\":null},{\"room_no\":36,\"user_id\":null},{\"room_no\":37,\"user_id\":null},{\"room_no\":38,\"user_id\":null},{\"room_no\":39,\"user_id\":null},{\"room_no\":40,\"user_id\":null},{\"room_no\":41,\"user_id\":null},{\"room_no\":42,\"user_id\":null},{\"room_no\":43,\"user_id\":null},{\"room_no\":44,\"user_id\":null},{\"room_no\":45,\"user_id\":null},{\"room_no\":46,\"user_id\":null},{\"room_no\":47,\"user_id\":null},{\"room_no\":48,\"user_id\":null},{\"room_no\":49,\"user_id\":null},{\"room_no\":50,\"user_id\":null},{\"room_no\":51,\"user_id\":null},{\"room_no\":52,\"user_id\":null},{\"room_no\":53,\"user_id\":null},{\"room_no\":54,\"user_id\":null},{\"room_no\":55,\"user_id\":null},{\"room_no\":56,\"user_id\":null},{\"room_no\":57,\"user_id\":null},{\"room_no\":58,\"user_id\":null},{\"room_no\":59,\"user_id\":null},{\"room_no\":60,\"user_id\":null},{\"room_no\":61,\"user_id\":null},{\"room_no\":62,\"user_id\":null},{\"room_no\":63,\"user_id\":null},{\"room_no\":64,\"user_id\":null},{\"room_no\":65,\"user_id\":null},{\"room_no\":66,\"user_id\":null},{\"room_no\":67,\"user_id\":null},{\"room_no\":68,\"user_id\":null},{\"room_no\":69,\"user_id\":null},{\"room_no\":70,\"user_id\":null},{\"room_no\":71,\"user_id\":null},{\"room_no\":72,\"user_id\":null},{\"room_no\":73,\"user_id\":null},{\"room_no\":74,\"user_id\":null},{\"room_no\":75,\"user_id\":null},{\"room_no\":76,\"user_id\":null},{\"room_no\":77,\"user_id\":null},{\"room_no\":78,\"user_id\":null},{\"room_no\":79,\"user_id\":null},{\"room_no\":80,\"user_id\":null},{\"room_no\":81,\"user_id\":null},{\"room_no\":82,\"user_id\":null},{\"room_no\":83,\"user_id\":null},{\"room_no\":84,\"user_id\":null},{\"room_no\":85,\"user_id\":null},{\"room_no\":86,\"user_id\":null},{\"room_no\":87,\"user_id\":null},{\"room_no\":88,\"user_id\":null},{\"room_no\":89,\"user_id\":null},{\"room_no\":90,\"user_id\":null},{\"room_no\":91,\"user_id\":null},{\"room_no\":92,\"user_id\":null},{\"room_no\":93,\"user_id\":null},{\"room_no\":94,\"user_id\":null},{\"room_no\":95,\"user_id\":null},{\"room_no\":96,\"user_id\":null},{\"room_no\":97,\"user_id\":null},{\"room_no\":98,\"user_id\":null},{\"room_no\":99,\"user_id\":null},{\"room_no\":100,\"user_id\":null}]}'::jsonb"
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {},
@@ -436,8 +560,8 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "cascade"
+          "onDelete": "no action",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -464,7 +588,7 @@
         },
         "room_id": {
           "name": "room_id",
-          "type": "integer",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
@@ -495,8 +619,8 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "cascade"
+          "onDelete": "no action",
+          "onUpdate": "no action"
         },
         "users_to_hotels_hotel_id_hotels_id_fk": {
           "name": "users_to_hotels_hotel_id_hotels_id_fk",
@@ -508,8 +632,21 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "cascade"
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "users_to_hotels_room_id_rooms_id_fk": {
+          "name": "users_to_hotels_room_id_rooms_id_fk",
+          "tableFrom": "users_to_hotels",
+          "tableTo": "rooms",
+          "columnsFrom": [
+            "room_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
@@ -527,7 +664,42 @@
       "isRLSEnabled": false
     }
   },
-  "enums": {},
+  "enums": {
+    "public.state": {
+      "name": "state",
+      "schema": "public",
+      "values": [
+        "andhra_pradesh",
+        "arunachal_pradesh",
+        "assam",
+        "bihar",
+        "chhattisgarh",
+        "goa",
+        "gujarat",
+        "haryana",
+        "himachal_pradesh",
+        "jharkhand",
+        "karnataka",
+        "kerala",
+        "madhya_pradesh",
+        "maharashtra",
+        "manipur",
+        "meghalaya",
+        "mizoram",
+        "nagaland",
+        "odisha",
+        "punjab",
+        "rajasthan",
+        "sikkim",
+        "tamil_nadu",
+        "telangana",
+        "tripura",
+        "uttar_pradesh",
+        "uttarakhand",
+        "west_bengal"
+      ]
+    }
+  },
   "schemas": {},
   "sequences": {},
   "roles": {},

@@ -1,44 +1,61 @@
 import {
   pgTable,
-  uuid,
-  varchar,
-  timestamp,
-  primaryKey,
-  integer,
   text,
-  jsonb,
+  timestamp,
+  boolean,
+  uuid,
+  primaryKey,
+  pgEnum,
+  index,
+  integer,
 } from "drizzle-orm/pg-core";
 import { user } from "@/src/db/schema/auth-schema";
-import { config, type roomsType } from "@/src/config";
 
-export const hotels = pgTable("hotels", {
-  id: uuid("id").primaryKey().defaultRandom().notNull(),
-  name: varchar({ length: 255 }).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
-    .$onUpdate(() => new Date())
-    .notNull(),
-});
+const states: [string, ...string[]] = [
+  "andhra_pradesh",
+  "arunachal_pradesh",
+  "assam",
+  "bihar",
+  "chhattisgarh",
+  "goa",
+  "gujarat",
+  "haryana",
+  "himachal_pradesh",
+  "jharkhand",
+  "karnataka",
+  "kerala",
+  "madhya_pradesh",
+  "maharashtra",
+  "manipur",
+  "meghalaya",
+  "mizoram",
+  "nagaland",
+  "odisha",
+  "punjab",
+  "rajasthan",
+  "sikkim",
+  "tamil_nadu",
+  "telangana",
+  "tripura",
+  "uttar_pradesh",
+  "uttarakhand",
+  "west_bengal",
+];
 
-export const rooms = pgTable("rooms", {
-  id: uuid("id").defaultRandom().primaryKey().notNull(),
-  hotel_id: uuid("hotel_id")
-    .references(() => hotels.id, { onDelete: "cascade", onUpdate: "cascade" })
-    .notNull(),
-  rooms: jsonb().$type<roomsType>().default(config.db.rooms).notNull(),
-});
+export const stateEnum = pgEnum("state", states);
 
 export const usersToHotels = pgTable(
   "users_to_hotels",
   {
     userId: text("user_id")
-      .references(() => user.id, { onDelete: "cascade", onUpdate: "cascade" })
-      .notNull(),
+      .notNull()
+      .references(() => user.id),
     hotelId: uuid("hotel_id")
-      .references(() => hotels.id, { onDelete: "cascade", onUpdate: "cascade" })
+      .references(() => hotels.id)
       .notNull(),
-    roomId: integer("room_id").notNull(),
+    roomId: uuid("room_id")
+      .references(() => rooms.id)
+      .notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
@@ -47,3 +64,47 @@ export const usersToHotels = pgTable(
   },
   (table) => [primaryKey({ columns: [table.userId, table.hotelId] })],
 );
+
+export const hotels = pgTable("hotels", {
+  id: uuid("id").defaultRandom().primaryKey().notNull(),
+  name: text("name").notNull(),
+  state: stateEnum("state").notNull(),
+  hostId: uuid("host_id")
+    .references(() => hosts.id)
+    .notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => new Date())
+    .notNull(),
+});
+
+export const hosts = pgTable(
+  "hosts",
+  {
+    id: uuid("id").defaultRandom().primaryKey().notNull(),
+    userId: text("user_id")
+      .references(() => user.id)
+      .notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [index("hosts_userId_idx").on(table.userId)],
+);
+
+export const rooms = pgTable("rooms", {
+  id: uuid("id").primaryKey().defaultRandom().notNull(),
+  hotelId: uuid("hotel_id")
+    .references(() => hotels.id)
+    .notNull(),
+  priceInInr: integer("price_in_inr").notNull(),
+  isReserved: boolean("is_reserved").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => new Date())
+    .notNull(),
+});
