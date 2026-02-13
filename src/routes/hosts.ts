@@ -18,7 +18,7 @@ router.post("/", async (c) => {
   const [result] = await insertHost({
     userId: user.id,
   });
-  return c.json({ user: result }, 201);
+  return c.json(result);
 });
 
 export default router;

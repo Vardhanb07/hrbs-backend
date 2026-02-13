@@ -1,15 +1,14 @@
 import { Hono } from "hono";
 import type { Env } from "@/src/utils/types";
-import {
-  selectHotels,
-  selectHotelsWithHostId,
-  insertHotel,
-  updateHotels,
-  deleteHotel,
-} from "@/src/db/queries/hotels";
 import * as z from "zod";
 import { validator } from "hono/validator";
-import { states } from "@/src/db/schema/schema";
+import {
+  selectRoomsOfHotel,
+  selectRooms,
+  insertRooms,
+  updateRooms,
+  deleteRooms,
+} from "@/src/db/queries/rooms";
 
 const router = new Hono<Env>();
 
@@ -22,23 +21,22 @@ router.use(async (c, next) => {
 });
 
 router.get("/", async (c) => {
-  const hotels = await selectHotels();
-  return c.json(hotels);
+  const result = await selectRooms();
+  return c.json(result);
 });
 
-router.get("/:hostId", async (c) => {
-  const hostId = c.req.param("hostId");
-  const hotels = await selectHotelsWithHostId(hostId);
-  return c.json(hotels);
+router.get("/:hotelId", async (c) => {
+  const { hotelId } = c.req.param();
+  const result = await selectRoomsOfHotel(hotelId);
+  return c.json(result);
 });
 
 router.post(
   "/",
   validator("json", (value, c) => {
     const schema = z.object({
-      hostId: z.uuid(),
-      name: z.string(),
-      state: z.enum(states),
+      hotelId: z.uuid(),
+      priceInInr: z.number(),
     });
     const parsed = schema.safeParse(value);
     if (!parsed.success) {
@@ -47,11 +45,10 @@ router.post(
     return parsed.data;
   }),
   async (c) => {
-    const { hostId, name, state } = c.req.valid("json");
-    const [result] = await insertHotel({
-      hostId: hostId,
-      name: name,
-      state: state,
+    const { hotelId, priceInInr } = c.req.valid("json");
+    const [result] = await insertRooms({
+      hotelId: hotelId,
+      priceInInr: priceInInr,
     });
     return c.json(result);
   },
@@ -62,8 +59,7 @@ router.put(
   validator("json", (value, c) => {
     const schema = z.object({
       id: z.uuid(),
-      name: z.string(),
-      state: z.enum(states),
+      priceInInr: z.number(),
     });
     const parsed = schema.safeParse(value);
     if (!parsed.success) {
@@ -72,8 +68,8 @@ router.put(
     return parsed.data;
   }),
   async (c) => {
-    const { id, name, state } = c.req.valid("json");
-    const [result] = await updateHotels(id, name, state);
+    const { id, priceInInr } = c.req.valid("json");
+    const [result] = await updateRooms(id, priceInInr);
     return c.json(result);
   },
 );
@@ -92,7 +88,7 @@ router.delete(
   }),
   async (c) => {
     const { id } = c.req.valid("json");
-    const [result] = await deleteHotel(id);
+    const [result] = await deleteRooms(id);
     return c.json(result);
   },
 );
