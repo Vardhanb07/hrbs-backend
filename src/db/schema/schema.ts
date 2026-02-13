@@ -11,7 +11,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { user } from "@/src/db/schema/auth-schema";
 
-const states: [string, ...string[]] = [
+export const states: [string, ...string[]] = [
   "andhra_pradesh",
   "arunachal_pradesh",
   "assam",
@@ -65,19 +65,23 @@ export const usersToHotels = pgTable(
   (table) => [primaryKey({ columns: [table.userId, table.hotelId] })],
 );
 
-export const hotels = pgTable("hotels", {
-  id: uuid("id").defaultRandom().primaryKey().notNull(),
-  name: text("name").notNull(),
-  state: stateEnum("state").notNull(),
-  hostId: uuid("host_id")
-    .references(() => hosts.id)
-    .notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
-    .$onUpdate(() => new Date())
-    .notNull(),
-});
+export const hotels = pgTable(
+  "hotels",
+  {
+    id: uuid("id").defaultRandom().primaryKey().notNull(),
+    name: text("name").notNull(),
+    state: stateEnum("state").notNull(),
+    hostId: uuid("host_id")
+      .references(() => hosts.id)
+      .notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [index("hotels_hostId_idx").on(table.hostId)],
+);
 
 export const hosts = pgTable(
   "hosts",

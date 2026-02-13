@@ -1,9 +1,4 @@
-import {
-  hotels,
-  hosts,
-  type NewHost,
-  type NewHotel,
-} from "@/src/db/schema/schema";
+import { hosts, type NewHost } from "@/src/db/schema/schema";
 import { db } from "@/src/db/index";
 
 export async function insertHost(host: NewHost) {
