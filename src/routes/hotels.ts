@@ -13,17 +13,17 @@ import { states } from "@/src/db/schema/schema";
 
 const router = new Hono<Env>();
 
+router.get("/", async (c) => {
+  const hotels = await selectHotels();
+  return c.json(hotels);
+});
+
 router.use(async (c, next) => {
   const user = c.get("user");
   if (user?.isHost) {
     next();
   }
   return c.text("Bad request", 400);
-});
-
-router.get("/", async (c) => {
-  const hotels = await selectHotels();
-  return c.json(hotels);
 });
 
 router.get("/:hostId", async (c) => {

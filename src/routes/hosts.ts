@@ -5,15 +5,7 @@ import { insertHost } from "@/src/db/queries/hosts";
 
 const router = new Hono<Env>();
 
-router.use(async (c, next) => {
-  const user = c.get("user");
-  if (user?.isHost) {
-    next();
-  }
-  return c.text("Bad request", 400);
-});
-
-router.post("/", async (c) => {
+router.get("/", async (c) => {
   const user = c.get("user") as typeof auth.$Infer.Session.user;
   const [result] = await insertHost({
     userId: user.id,

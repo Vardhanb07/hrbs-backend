@@ -9,6 +9,8 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
+    autoSignIn: true,
+    resetPasswordTokenExpiresIn: 3600,
   },
   trustedOrigins: [config.cors.origin],
   user: {

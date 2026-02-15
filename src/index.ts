@@ -54,19 +54,19 @@ app.get("/health", (c) => c.text("OK"));
 
 app.use("*", async (c, next) => {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
-  if (!session) {
-    c.set("user", null);
-    c.set("session", null);
+  if (session) {
+    c.set("user", session.user);
+    c.set("session", session.session);
     await next();
     return;
   }
 
-  c.set("user", session.user);
-  c.set("session", session.session);
+  c.set("user", null);
+  c.set("session", null);
   await next();
 });
 
-app.route("/api/v1/auth", authRoute);
+app.route("/api/auth", authRoute);
 app.route("/api/v1/hosts", hosts);
 app.route("/api/v1/hotels", hotels);
 app.route("/api/v1/rooms", rooms);
