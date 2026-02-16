@@ -93,4 +93,5 @@ ALTER TABLE "users_to_hotels" ADD CONSTRAINT "users_to_hotels_room_id_rooms_id_f
 CREATE INDEX "account_userId_idx" ON "account" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "session_userId_idx" ON "session" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "verification_identifier_idx" ON "verification" USING btree ("identifier");--> statement-breakpoint
-CREATE INDEX "hosts_userId_idx" ON "hosts" USING btree ("user_id");
+CREATE INDEX "hosts_userId_idx" ON "hosts" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "hotels_hostId_idx" ON "hotels" USING btree ("host_id");

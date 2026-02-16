@@ -21,9 +21,9 @@ router.get("/", async (c) => {
 router.use(async (c, next) => {
   const user = c.get("user");
   if (user?.isHost) {
-    next();
+    await next();
   }
-  return c.text("Bad request", 400);
+  return c.json({ error: "bad request" }, 400);
 });
 
 router.get("/:hostId", async (c) => {
@@ -41,8 +41,9 @@ router.post(
       state: z.enum(states),
     });
     const parsed = schema.safeParse(value);
+    console.log(parsed);
     if (!parsed.success) {
-      return c.text("Invalid body", 401);
+      return c.json({ error: "invalid body" }, 401);
     }
     return parsed.data;
   }),
@@ -56,7 +57,6 @@ router.post(
     return c.json(result);
   },
 );
-
 router.put(
   "/",
   validator("json", (value, c) => {
@@ -67,7 +67,7 @@ router.put(
     });
     const parsed = schema.safeParse(value);
     if (!parsed.success) {
-      return c.text("Invalid body", 401);
+      return c.json({ error: "invalid body" }, 401);
     }
     return parsed.data;
   }),
@@ -86,7 +86,7 @@ router.delete(
     });
     const parsed = schema.safeParse(value);
     if (!parsed.success) {
-      return c.text("Invalid body", 401);
+      return c.json({ error: "invalid body" }, 401);
     }
     return parsed.data;
   }),

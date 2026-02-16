@@ -1,1 +1,0 @@
-CREATE INDEX "hotels_hostId_idx" ON "hotels" USING btree ("host_id");

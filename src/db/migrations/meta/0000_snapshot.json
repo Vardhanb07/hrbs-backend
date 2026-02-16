@@ -1,5 +1,5 @@
 {
-  "id": "9df84de6-03e0-4f2a-8e98-80218590f78d",
+  "id": "8c7c2ea0-971c-4db2-87b4-5f4414170bd9",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -481,7 +481,23 @@
           "default": "now()"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "hotels_hostId_idx": {
+          "name": "hotels_hostId_idx",
+          "columns": [
+            {
+              "expression": "host_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "hotels_host_id_hosts_id_fk": {
           "name": "hotels_host_id_hosts_id_fk",

@@ -10,6 +10,7 @@ import {
   integer,
 } from "drizzle-orm/pg-core";
 import { user } from "@/src/db/schema/auth-schema";
+import { relations } from "drizzle-orm";
 
 export const states: [string, ...string[]] = [
   "andhra_pradesh",
@@ -98,6 +99,10 @@ export const hosts = pgTable(
   },
   (table) => [index("hosts_userId_idx").on(table.userId)],
 );
+
+export const hostsRelations = relations(user, ({ one }) => ({
+  hosts: one(user),
+}));
 
 export const rooms = pgTable("rooms", {
   id: uuid("id").primaryKey().defaultRandom().notNull(),
