@@ -3,7 +3,7 @@ import type { Env } from "@/src/utils/types";
 import * as z from "zod";
 import { validator } from "hono/validator";
 import {
-  selectRoomsOfHotel,
+  selectRoomsWithHotelId,
   selectRooms,
   insertRooms,
   updateRooms,
@@ -27,7 +27,7 @@ router.get("/", async (c) => {
 
 router.get("/:hotelId", async (c) => {
   const { hotelId } = c.req.param();
-  const result = await selectRoomsOfHotel(hotelId);
+  const result = await selectRoomsWithHotelId(hotelId);
   return c.json(result);
 });
 

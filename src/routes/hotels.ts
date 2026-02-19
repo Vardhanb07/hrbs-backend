@@ -7,6 +7,7 @@ import {
   updateHotels,
   deleteHotel,
 } from "@/src/db/queries/hotels";
+import { selectReversedRoomsWithHotelId } from "@/src/db/queries/rooms";
 import * as z from "zod";
 import { validator } from "hono/validator";
 import { states } from "@/src/db/schema/schema";
@@ -79,20 +80,26 @@ router.put(
 );
 
 router.delete(
-  "/",
-  validator("json", (value, c) => {
+  "/:hotelId",
+  validator("param", (value, c) => {
     const schema = z.object({
-      id: z.uuid(),
+      hotelId: z.uuid(),
     });
     const parsed = schema.safeParse(value);
     if (!parsed.success) {
-      return c.json({ error: "invalid body" }, 401);
+      return c.json({ error: "invalid params" }, 401);
     }
     return parsed.data;
   }),
   async (c) => {
-    const { id } = c.req.valid("json");
-    const [result] = await deleteHotel(id);
+    const { hotelId } = c.req.valid("param");
+    const rooms = await selectReversedRoomsWithHotelId(hotelId);
+    if (rooms.length > 0) {
+      return c.json({
+        error: "Unable to delete as property as reversed rooms",
+      });
+    }
+    const [result] = await deleteHotel(hotelId);
     return c.json(result);
   },
 );

@@ -1,9 +1,16 @@
 import { rooms, type NewRoom } from "@/src/db/schema/schema";
 import { db } from "@/src/db/index";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 
-export async function selectRoomsOfHotel(hotelId: string) {
+export async function selectRoomsWithHotelId(hotelId: string) {
   return await db.select().from(rooms).where(eq(rooms.hotelId, hotelId));
+}
+
+export async function selectReversedRoomsWithHotelId(hotelId: string) {
+  return await db
+    .select()
+    .from(rooms)
+    .where(and(eq(rooms.hotelId, hotelId), eq(rooms.isReserved, true)));
 }
 
 export async function selectRooms() {
