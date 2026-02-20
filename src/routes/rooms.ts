@@ -18,7 +18,7 @@ router.use(async (c, next) => {
   if (user?.isHost) {
     await next();
   }
-  return c.json({ error: "bad request" }, 400);
+  return c.json({ error: "unauthorized request" }, 401);
 });
 
 router.get("/", async (c) => {
@@ -26,11 +26,24 @@ router.get("/", async (c) => {
   return c.json(result);
 });
 
-router.get("/:hotelId", async (c) => {
-  const { hotelId } = c.req.param();
-  const result = await selectRoomsWithHotelId(hotelId);
-  return c.json(result);
-});
+router.get(
+  "/:hotelId",
+  validator("param", (value, c) => {
+    const schema = z.object({
+      hotelId: z.uuid(),
+    });
+    const parsed = schema.safeParse(value);
+    if (!parsed.success) {
+      return c.json({ error: "invalid params" }, 400);
+    }
+    return parsed.data;
+  }),
+  async (c) => {
+    const { hotelId } = c.req.valid('param')
+    const result = await selectRoomsWithHotelId(hotelId);
+    return c.json(result);
+  },
+);
 
 router.post(
   "/",
