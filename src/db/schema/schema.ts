@@ -8,6 +8,7 @@ import {
   pgEnum,
   index,
   integer,
+  date,
 } from "drizzle-orm/pg-core";
 import { user } from "@/src/db/schema/auth-schema";
 import { relations } from "drizzle-orm";
@@ -57,6 +58,8 @@ export const usersToHotels = pgTable(
     roomId: uuid("room_id")
       .references(() => rooms.id)
       .notNull(),
+    checkIn: date("check_in"),
+    checkOut: date("check_out"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
@@ -106,6 +109,7 @@ export const hostsRelations = relations(user, ({ one }) => ({
 
 export const rooms = pgTable("rooms", {
   id: uuid("id").primaryKey().defaultRandom().notNull(),
+  name: text("name").notNull(),
   hotelId: uuid("hotel_id")
     .references(() => hotels.id)
     .notNull(),

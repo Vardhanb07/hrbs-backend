@@ -14,6 +14,11 @@ export async function selectHotels() {
   return await db.select().from(hotels);
 }
 
+export async function selectLimitedHotels(limit: string | undefined | null) {
+  const HOTELS_FETCH_LIMIT = parseInt(limit ?? "10");
+  return await db.select().from(hotels).limit(HOTELS_FETCH_LIMIT);
+}
+
 export async function selectHotelsWithHostId(hostId: string) {
   return await db.select().from(hotels).where(eq(hotels.hostId, hostId));
 }

@@ -17,6 +17,10 @@ export async function selectRooms() {
   return await db.select().from(rooms);
 }
 
+export async function selectRoomsWithId(roomId: string) {
+  return await db.select().from(rooms).where(eq(rooms.id, roomId));
+}
+
 export async function insertRooms(room: NewRoom) {
   return await db.insert(rooms).values(room).onConflictDoNothing().returning();
 }
