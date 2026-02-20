@@ -8,6 +8,7 @@ import {
   insertRooms,
   updateRooms,
   deleteRooms,
+  selectRoomsWithId,
 } from "@/src/db/queries/rooms";
 
 const router = new Hono<Env>();
@@ -35,6 +36,7 @@ router.post(
   "/",
   validator("json", (value, c) => {
     const schema = z.object({
+      name: z.string(),
       hotelId: z.uuid(),
       priceInInr: z.number(),
     });
@@ -45,8 +47,9 @@ router.post(
     return parsed.data;
   }),
   async (c) => {
-    const { hotelId, priceInInr } = c.req.valid("json");
+    const { name, hotelId, priceInInr } = c.req.valid("json");
     const [result] = await insertRooms({
+      name: name,
       hotelId: hotelId,
       priceInInr: priceInInr,
     });
@@ -75,20 +78,30 @@ router.put(
 );
 
 router.delete(
-  "/",
-  validator("json", (value, c) => {
+  "/:roomId",
+  validator("param", (value, c) => {
     const schema = z.object({
-      id: z.uuid(),
+      roomId: z.uuid(),
     });
     const parsed = schema.safeParse(value);
     if (!parsed.success) {
-      return c.json({ error: "invalid body" }, 401);
+      return c.json({ error: "invalid param" }, 401);
     }
     return parsed.data;
   }),
   async (c) => {
-    const { id } = c.req.valid("json");
-    const [result] = await deleteRooms(id);
+    const { roomId } = c.req.valid("param");
+    const [room] = await selectRoomsWithId(roomId);
+    if (!room) {
+      return c.json({ error: "no room exists with provided roomId" }, 404);
+    }
+    if (room.isReserved) {
+      return c.json(
+        { error: "unable to delete room is currently reserved" },
+        400,
+      );
+    }
+    const [result] = await deleteRooms(roomId);
     return c.json(result);
   },
 );

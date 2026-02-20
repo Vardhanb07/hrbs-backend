@@ -1,11 +1,11 @@
 import { Hono } from "hono";
 import type { Env } from "@/src/utils/types";
 import {
-  selectHotels,
   selectHotelsWithHostId,
   insertHotel,
   updateHotels,
   deleteHotel,
+  selectLimitedHotels,
 } from "@/src/db/queries/hotels";
 import { selectReversedRoomsWithHotelId } from "@/src/db/queries/rooms";
 import * as z from "zod";
@@ -14,24 +14,55 @@ import { states } from "@/src/db/schema/schema";
 
 const router = new Hono<Env>();
 
-router.get("/", async (c) => {
-  const hotels = await selectHotels();
-  return c.json(hotels);
-});
+router.get(
+  "/",
+  validator("query", (value, c) => {
+    const schema = z.object({
+      state: z.enum(states),
+      limit: z.string(),
+    });
+    const parsed = schema.safeParse(value);
+    if (!parsed.success) {
+      return c.json({ error: "invalid query" }, 400);
+    }
+    return parsed.data;
+  }),
+  async (c) => {
+    const { limit, state } = c.req.valid("query");
+    let hotels = await selectLimitedHotels(limit);
+    if (state) {
+      hotels = hotels.filter((hotel) => hotel.state === state);
+    }
+    return c.json(hotels);
+  },
+);
 
 router.use(async (c, next) => {
   const user = c.get("user");
   if (user?.isHost) {
     await next();
   }
-  return c.json({ error: "bad request" }, 400);
+  return c.json({ error: "unauthorized request" }, 401);
 });
 
-router.get("/:hostId", async (c) => {
-  const hostId = c.req.param("hostId");
-  const hotels = await selectHotelsWithHostId(hostId);
-  return c.json(hotels);
-});
+router.get(
+  "/:hostId",
+  validator("param", (value, c) => {
+    const schema = z.object({
+      hostId: z.uuid(),
+    });
+    const parsed = schema.safeParse(value);
+    if (!parsed.success) {
+      return c.json({ error: "invalid params" }, 400);
+    }
+    return parsed.data;
+  }),
+  async (c) => {
+    const hostId = c.req.param("hostId");
+    const hotels = await selectHotelsWithHostId(hostId);
+    return c.json(hotels);
+  },
+);
 
 router.post(
   "/",
@@ -42,7 +73,6 @@ router.post(
       state: z.enum(states),
     });
     const parsed = schema.safeParse(value);
-    console.log(parsed);
     if (!parsed.success) {
       return c.json({ error: "invalid body" }, 401);
     }
@@ -96,7 +126,7 @@ router.delete(
     const rooms = await selectReversedRoomsWithHotelId(hotelId);
     if (rooms.length > 0) {
       return c.json({
-        error: "Unable to delete as property as reversed rooms",
+        error: "unable to delete property as it has reversed rooms",
       });
     }
     const [result] = await deleteHotel(hotelId);
