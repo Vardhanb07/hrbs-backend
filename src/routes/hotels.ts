@@ -18,8 +18,8 @@ router.get(
   "/",
   validator("query", (value, c) => {
     const schema = z.object({
-      state: z.enum(states),
-      limit: z.string(),
+      state: z.enum(states).optional(),
+      limit: z.string().optional(),
     });
     const parsed = schema.safeParse(value);
     if (!parsed.success) {

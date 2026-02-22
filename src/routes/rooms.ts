@@ -39,7 +39,7 @@ router.get(
     return parsed.data;
   }),
   async (c) => {
-    const { hotelId } = c.req.valid('param')
+    const { hotelId } = c.req.valid("param");
     const result = await selectRoomsWithHotelId(hotelId);
     return c.json(result);
   },
@@ -76,6 +76,7 @@ router.put(
     const schema = z.object({
       id: z.uuid(),
       priceInInr: z.number(),
+      name: z.string(),
     });
     const parsed = schema.safeParse(value);
     if (!parsed.success) {
@@ -84,8 +85,8 @@ router.put(
     return parsed.data;
   }),
   async (c) => {
-    const { id, priceInInr } = c.req.valid("json");
-    const [result] = await updateRooms(id, priceInInr);
+    const { id, priceInInr, name } = c.req.valid("json");
+    const [result] = await updateRooms(id, name, priceInInr);
     return c.json(result);
   },
 );
@@ -110,7 +111,7 @@ router.delete(
     }
     if (room.isReserved) {
       return c.json(
-        { error: "unable to delete room is currently reserved" },
+        { error: "unable to delete room as it is currently reserved" },
         400,
       );
     }

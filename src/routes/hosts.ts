@@ -30,7 +30,7 @@ router.get(
   "/:userId",
   validator("param", (value, c) => {
     const schema = z.object({
-      userId: z.uuid(),
+      userId: z.string(),
     });
     const parsed = schema.safeParse(value);
     if (!parsed.success) {

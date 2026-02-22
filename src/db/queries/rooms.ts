@@ -25,13 +25,18 @@ export async function insertRooms(room: NewRoom) {
   return await db.insert(rooms).values(room).onConflictDoNothing().returning();
 }
 
-export async function updateRooms(id: string, priceInInr: number) {
+export async function updateRooms(
+  roomId: string,
+  name: string,
+  priceInInr: number,
+) {
   return await db
     .update(rooms)
     .set({
+      name: name,
       priceInInr: priceInInr,
     })
-    .where(eq(rooms.id, id))
+    .where(eq(rooms.id, roomId))
     .returning();
 }
 
