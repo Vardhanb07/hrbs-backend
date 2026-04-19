@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import type { Env } from "@/src/utils/types";
+import type { Env } from "../utils/types";
 import * as z from "zod";
 import { validator } from "hono/validator";
 import {
@@ -9,7 +9,8 @@ import {
   updateRooms,
   deleteRooms,
   selectRoomsWithId,
-} from "@/src/db/queries/rooms";
+} from "../db/queries/rooms";
+import { selectBookingsWithRoomId } from "../db/queries/bookings";
 
 const router = new Hono<Env>();
 
@@ -51,7 +52,11 @@ router.post(
     const schema = z.object({
       name: z.string(),
       hotelId: z.uuid(),
-      priceInInr: z.number(),
+      priceInInr: z.number().int().positive(),
+      cleaningFeeInInr: z.number().int().nonnegative().optional(),
+      maxGuests: z.number().int().positive().optional(),
+      checkInTime: z.iso.time().optional(),
+      checkOutTime: z.iso.time().optional(),
     });
     const parsed = schema.safeParse(value);
     if (!parsed.success) {
@@ -60,11 +65,25 @@ router.post(
     return parsed.data;
   }),
   async (c) => {
-    const { name, hotelId, priceInInr } = c.req.valid("json");
+    const {
+      name,
+      hotelId,
+      priceInInr,
+      cleaningFeeInInr,
+      maxGuests,
+      checkInTime,
+      checkOutTime,
+    } = c.req.valid("json");
     const [result] = await insertRooms({
       name: name,
       hotelId: hotelId,
       priceInInr: priceInInr,
+      ...(cleaningFeeInInr !== undefined
+        ? { cleaningFeeInInr: cleaningFeeInInr }
+        : {}),
+      ...(maxGuests !== undefined ? { maxGuests: maxGuests } : {}),
+      ...(checkInTime !== undefined ? { checkInTime: checkInTime } : {}),
+      ...(checkOutTime !== undefined ? { checkOutTime: checkOutTime } : {}),
     });
     return c.json(result);
   },
@@ -75,8 +94,12 @@ router.put(
   validator("json", (value, c) => {
     const schema = z.object({
       id: z.uuid(),
-      priceInInr: z.number(),
+      priceInInr: z.number().int().positive(),
       name: z.string(),
+      cleaningFeeInInr: z.number().int().nonnegative().optional(),
+      maxGuests: z.number().int().positive().optional(),
+      checkInTime: z.iso.time().optional(),
+      checkOutTime: z.iso.time().optional(),
     });
     const parsed = schema.safeParse(value);
     if (!parsed.success) {
@@ -85,8 +108,21 @@ router.put(
     return parsed.data;
   }),
   async (c) => {
-    const { id, priceInInr, name } = c.req.valid("json");
-    const [result] = await updateRooms(id, name, priceInInr);
+    const {
+      id,
+      priceInInr,
+      name,
+      cleaningFeeInInr,
+      maxGuests,
+      checkInTime,
+      checkOutTime,
+    } = c.req.valid("json");
+    const [result] = await updateRooms(id, name, priceInInr, {
+      cleaningFeeInInr,
+      maxGuests,
+      checkInTime,
+      checkOutTime,
+    });
     return c.json(result);
   },
 );
@@ -109,9 +145,13 @@ router.delete(
     if (!room) {
       return c.json({ error: "no room exists with provided roomId" }, 404);
     }
-    if (room.isReserved) {
+    const bookings = await selectBookingsWithRoomId(roomId);
+    if (room.isReserved || bookings.length > 0) {
       return c.json(
-        { error: "unable to delete room as it is currently reserved" },
+        {
+          error:
+            "unable to delete room as it has active or historical bookings",
+        },
         400,
       );
     }

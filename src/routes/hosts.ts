@@ -1,7 +1,7 @@
 import { Hono } from "hono";
-import type { Env } from "@/src/utils/types";
-import { auth } from "@/src/utils/auth";
-import { insertHost, selectHostWithUserId } from "@/src/db/queries/hosts";
+import type { Env } from "../utils/types";
+import { auth } from "../utils/auth";
+import { insertHost, selectHostWithUserId } from "../db/queries/hosts";
 import { validator } from "hono/validator";
 import * as z from "zod";
 

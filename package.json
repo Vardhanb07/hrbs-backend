@@ -6,10 +6,11 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "db:generate": "pnpm exec drizzle-kit generate",
-    "db:migrate": "pnpm exec drizzle-kit migrate",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
     "lint": "oxlint",
-    "lint:fix": "oxlint --fix" 
+    "lint:fix": "oxlint --fix",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@hono/node-server": "^1.19.9",

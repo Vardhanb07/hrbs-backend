@@ -1,5 +1,5 @@
-import { hotels, type NewHotel } from "@/src/db/schema/schema";
-import { db } from "@/src/db/index";
+import { hotels, type NewHotel } from "../schema/schema";
+import { db } from "../index";
 import { eq } from "drizzle-orm";
 
 export async function insertHotel(hotel: NewHotel) {

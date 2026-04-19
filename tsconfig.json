@@ -15,15 +15,10 @@
     "sourceMap": true,
     "module": "preserve",
     "noEmit": true,
+    "types": ["node"],
     "lib": [
       "es2022"
     ],
-    "baseUrl": ".",
-    "paths": {
-      "@/*": [
-        "./*"
-      ]
-    }
   },
   "exclude": [
     "node_modules"

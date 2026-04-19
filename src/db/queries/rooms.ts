@@ -1,5 +1,5 @@
-import { rooms, type NewRoom } from "@/src/db/schema/schema";
-import { db } from "@/src/db/index";
+import { rooms, type NewRoom } from "../schema/schema";
+import { db } from "../index";
 import { eq, and } from "drizzle-orm";
 
 export async function selectRoomsWithHotelId(hotelId: string) {
@@ -29,12 +29,30 @@ export async function updateRooms(
   roomId: string,
   name: string,
   priceInInr: number,
+  roomDetails?: {
+    cleaningFeeInInr?: number;
+    maxGuests?: number;
+    checkInTime?: string;
+    checkOutTime?: string;
+  },
 ) {
   return await db
     .update(rooms)
     .set({
       name: name,
       priceInInr: priceInInr,
+      ...(roomDetails?.cleaningFeeInInr !== undefined
+        ? { cleaningFeeInInr: roomDetails.cleaningFeeInInr }
+        : {}),
+      ...(roomDetails?.maxGuests !== undefined
+        ? { maxGuests: roomDetails.maxGuests }
+        : {}),
+      ...(roomDetails?.checkInTime !== undefined
+        ? { checkInTime: roomDetails.checkInTime }
+        : {}),
+      ...(roomDetails?.checkOutTime !== undefined
+        ? { checkOutTime: roomDetails.checkOutTime }
+        : {}),
     })
     .where(eq(rooms.id, roomId))
     .returning();

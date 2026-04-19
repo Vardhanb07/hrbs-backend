@@ -1,4 +1,4 @@
-import type { auth } from "@/src/utils/auth";
+import type { auth } from "./auth";
 
 export type Env = {
   Variables: {

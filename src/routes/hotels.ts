@@ -1,16 +1,17 @@
 import { Hono } from "hono";
-import type { Env } from "@/src/utils/types";
+import type { Env } from "../utils/types";
 import {
   selectHotelsWithHostId,
   insertHotel,
   updateHotels,
   deleteHotel,
   selectLimitedHotels,
-} from "@/src/db/queries/hotels";
-import { selectReversedRoomsWithHotelId } from "@/src/db/queries/rooms";
+} from "../db/queries/hotels";
+import { selectReversedRoomsWithHotelId } from "../db/queries/rooms";
+import { selectBookingsWithHotelId } from "../db/queries/bookings";
 import * as z from "zod";
 import { validator } from "hono/validator";
-import { states } from "@/src/db/schema/schema";
+import { states } from "../db/schema/schema";
 
 const router = new Hono<Env>();
 
@@ -124,9 +125,10 @@ router.delete(
   async (c) => {
     const { hotelId } = c.req.valid("param");
     const rooms = await selectReversedRoomsWithHotelId(hotelId);
-    if (rooms.length > 0) {
+    const bookings = await selectBookingsWithHotelId(hotelId);
+    if (rooms.length > 0 || bookings.length > 0) {
       return c.json({
-        error: "unable to delete property as it has reversed rooms",
+        error: "unable to delete property as it still has rooms or bookings",
       });
     }
     const [result] = await deleteHotel(hotelId);

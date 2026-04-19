@@ -1,6 +1,6 @@
-import { hosts, type NewHost } from "@/src/db/schema/schema";
-import { user } from "@/src/db/schema/auth-schema";
-import { db } from "@/src/db/index";
+import { hosts, type NewHost } from "../schema/schema";
+import { user } from "../schema/auth-schema";
+import { db } from "../index";
 import { eq } from "drizzle-orm";
 
 export async function insertHost(host: NewHost) {

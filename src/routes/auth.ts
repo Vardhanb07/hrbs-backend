@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { auth } from "@/src/utils/auth";
+import { auth } from "../utils/auth";
 
 const router = new Hono();
 
