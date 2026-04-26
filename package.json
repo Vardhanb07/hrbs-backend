@@ -1,36 +1,36 @@
 {
-  "name": "hono",
-  "type": "module",
-  "description": "Hotel room booking system backend - college project",
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "build": "tsc",
-    "start": "node dist/index.js",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "lint": "oxlint",
-    "lint:fix": "oxlint --fix",
-    "db:studio": "drizzle-kit studio"
-  },
-  "dependencies": {
-    "@hono/node-server": "^1.19.9",
-    "@hono/swagger-ui": "^0.5.3",
-    "better-auth": "^1.4.18",
-    "dotenv": "^17.2.3",
-    "drizzle-orm": "^0.45.1",
-    "hono": "^4.11.7",
-    "pg": "^8.18.0",
-    "postgres": "^3.4.8",
-    "zod": "^4.3.6"
-  },
-  "author": "Vardhan Battula",
-  "devDependencies": {
-    "@types/node": "^20.19.31",
-    "@types/pg": "^8.16.0",
-    "drizzle-kit": "^0.31.8",
-    "oxlint": "^1.47.0",
-    "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
-  },
-  "packageManager": "pnpm@10.29.3+sha512.498e1fb4cca5aa06c1dcf2611e6fafc50972ffe7189998c409e90de74566444298ffe43e6cd2acdc775ba1aa7cc5e092a8b7054c811ba8c5770f84693d33d2dc"
+	"name": "hono",
+	"type": "module",
+	"description": "Hotel room booking system backend - college project",
+	"scripts": {
+		"dev": "tsx watch src/index.ts",
+		"build": "tsc",
+		"start": "node dist/index.js",
+		"db:generate": "drizzle-kit generate",
+		"db:migrate": "drizzle-kit migrate",
+		"lint": "oxlint",
+		"lint:fix": "oxlint --fix",
+		"db:studio": "drizzle-kit studio"
+	},
+	"dependencies": {
+		"@hono/node-server": "^1.19.9",
+		"@hono/swagger-ui": "^0.5.3",
+		"better-auth": "^1.4.18",
+		"dotenv": "^17.2.3",
+		"drizzle-orm": "^0.45.1",
+		"hono": "^4.11.7",
+		"pg": "^8.18.0",
+		"postgres": "^3.4.8",
+		"zod": "^4.3.6"
+	},
+	"author": "Vardhan Battula",
+	"devDependencies": {
+		"@types/node": "^20.19.31",
+		"@types/pg": "^8.16.0",
+		"drizzle-kit": "^0.31.8",
+		"oxlint": "^1.47.0",
+		"tsx": "^4.21.0",
+		"typescript": "^5.9.3"
+	},
+	"packageManager": "pnpm@10.29.3+sha512.498e1fb4cca5aa06c1dcf2611e6fafc50972ffe7189998c409e90de74566444298ffe43e6cd2acdc775ba1aa7cc5e092a8b7054c811ba8c5770f84693d33d2dc"
 }

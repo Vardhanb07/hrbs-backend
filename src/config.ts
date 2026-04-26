@@ -1,58 +1,58 @@
-import { loadEnvFile, env } from "process";
+import { env, loadEnvFile } from "node:process";
 
 loadEnvFile();
 
 const envOrThrow = (field: string) => {
-  if (!env[field]) {
-    throw new Error(`${field} is missing`);
-  }
-  return env[field];
+	if (!env[field]) {
+		throw new Error(`${field} is missing`);
+	}
+	return env[field];
 };
 
 export type roomsType = {
-  rooms: {
-    room_no: number;
-    user_id: string | null;
-  }[];
+	rooms: {
+		room_no: number;
+		user_id: string | null;
+	}[];
 };
 
 const rooms: roomsType = {
-  rooms: [],
+	rooms: [],
 };
 
 for (let i = 1; i <= 100; i++) {
-  rooms.rooms.push({
-    room_no: i,
-    user_id: null,
-  });
+	rooms.rooms.push({
+		room_no: i,
+		user_id: null,
+	});
 }
 
 type DBConfig = {
-  url: string;
-  rooms: roomsType;
+	url: string;
+	rooms: roomsType;
 };
 
 type APIConfig = {
-  port: number;
+	port: number;
 };
 
 type CORSConfig = {
-  origin: string
-}
+	origin: string;
+};
 
 export const config: {
-  db: DBConfig;
-  api: APIConfig;
-  cors: CORSConfig
+	db: DBConfig;
+	api: APIConfig;
+	cors: CORSConfig;
 } = {
-  db: {
-    url: envOrThrow("DATABASE_URL"),
-    rooms: rooms
-  },
-  api: {
-    port: parseInt(envOrThrow("PORT")),
-  },
-  cors: {
-    origin: envOrThrow("ORIGIN")
-  }
+	db: {
+		url: envOrThrow("DATABASE_URL"),
+		rooms: rooms,
+	},
+	api: {
+		port: parseInt(envOrThrow("PORT"), 10),
+	},
+	cors: {
+		origin: envOrThrow("ORIGIN"),
+	},
 };
